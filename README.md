@@ -1,107 +1,66 @@
-# Gamer CV API
+# Gamer Stats API
 
-A secure FastAPI backend for the Gamer CV mobile application, focusing on secure gaming statistics aggregation and user management.
+Simple FastAPI backend for gaming statistics tracking.
 
-## 🚀 Quick Start
+## What it does
 
-### Prerequisites
-- Python 3.11+
-- pip or poetry
-- Supabase account and project
+- Add games with username → fetches stats from external APIs
+- View your games list 
+- Click game → see detailed stats
+- Profile page → aggregated stats by category (MOBA/FPS/RPG)
 
-### Installation
+## Quick Start
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd Minor_Secure_Programming_Backend
-```
-
-2. Create virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
+1. **Install dependencies:**
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Set up environment variables:
+2. **Set up environment:**
 ```bash
 cp example.env .env
-# Edit .env with your actual values
+# Edit .env with your Supabase credentials
 ```
 
-5. Run the application:
+3. **Run:**
 ```bash
 python main.py
 ```
 
-The API will be available at `http://localhost:8000`
+API available at `http://localhost:8000`
+- Docs: `http://localhost:8000/docs`
 
-### API Documentation
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+## API Endpoints
 
-## 🏗️ Project Structure
+### Games
+- `POST /api/v1/games` - Add game
+- `GET /api/v1/games` - List games
+- `DELETE /api/v1/games/{id}` - Remove game
+
+### Stats  
+- `GET /api/v1/stats/games/{id}` - Get game stats
+- `POST /api/v1/stats/games/{id}/refresh` - Refresh from external API
+- `GET /api/v1/stats/profile` - User profile with category totals
+
+### Auth
+- `POST /api/v1/auth/register` - Register
+- `POST /api/v1/auth/login` - Login
+
+## Project Structure
 
 ```
-Minor_Secure_Programming_Backend/
-├── main.py                 # FastAPI application entry point
-├── requirements.txt        # Python dependencies
-├── example.env            # Environment variables template
-├── .gitignore            # Git ignore rules
-└── README.md             # This file
+app/
+├── models/          # Data models (games, stats, auth)
+├── routers/         # API endpoints
+├── services/        # Business logic
+└── core/           # Database, security, config
 ```
 
-## 🔧 Development
+## Environment Variables
 
-### Branch Strategy
-- `main`: Production-ready FastAPI skeleton
-- `dev`: Development branch with full API structure
-- Feature branches: Checkout from `dev`, PR back to `dev`
-
-### Environment Variables
-Copy `example.env` to `.env` and configure:
-
-- **Supabase**: Database connection and authentication
-- **Security**: JWT secrets and algorithm settings
-- **External APIs**: Game API keys (Riot, Steam, etc.)
-
-## 📚 Features (Planned)
-
-- User authentication and registration
-- Secure password handling with bcrypt
-- Game statistics aggregation
-- Gaming wellness tracking
-- Friend comparison system
-- Secure API with JWT tokens
-
-## 🔒 Security Features
-
-- JWT-based authentication
-- Password hashing with bcrypt
-- Input validation with Pydantic
-- CORS configuration
-- Environment-based secrets
-- Supabase integration for secure data storage
-
-## 🧪 Testing
-
-```bash
-pytest
+Required in `.env`:
 ```
-
-## 📝 License
-
-[Add your license here]
-
-## 👥 Team
-
-- Ian Donker - Team Leader
-- Timothy Adewale - Scrum Master
-- David Hlaváček - Code Reviewer
-- Stefan Tasca - Secretary
-- Batuhan Gezgin - Developer 
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_key
+SECRET_KEY=your_jwt_secret
+``` 
