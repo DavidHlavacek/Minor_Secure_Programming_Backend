@@ -31,6 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def root():
     """Root endpoint - API health check"""
@@ -39,6 +40,7 @@ async def root():
         "version": "0.1.0",
         "status": "healthy",
     }
+
 
 @app.get("/health")
 async def health_check():

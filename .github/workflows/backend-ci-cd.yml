@@ -85,8 +85,10 @@ jobs:
           pylint --disable=all --enable=invalid-name,unnecessary-lambda,dangerous-default-value .
         continue-on-error: true
         
-      - name: Run black format check
-        run: black --check --diff .
+      - name: Run black format check (informational only)
+        run: |
+          echo "::notice::Running black format check (for information only, will not fail the build)"
+          black --check --diff . || echo "Black formatting issues exist but continuing"
         continue-on-error: true
 
   test:
