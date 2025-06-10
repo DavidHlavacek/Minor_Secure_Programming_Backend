@@ -31,8 +31,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
 @app.get("/")
 async def root():
     """Root endpoint - API health check"""
@@ -42,7 +40,6 @@ async def root():
         "status": "healthy",
     }
 
-
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring"""
@@ -51,6 +48,7 @@ async def health_check():
         "service": "gamer-cv-api",
         "version": "0.1.0",
     }
+
 
 if __name__ == "__main__":
     import uvicorn

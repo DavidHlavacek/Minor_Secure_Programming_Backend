@@ -9,11 +9,14 @@ import subprocess
 import json
 from datetime import datetime
 
+
 def banner(message):
     """Print a banner with the given message"""
     print("\n" + "=" * 80)
     print(f" {message}")
     print("=" * 80)
+
+
 
 def run_command(command, description):
     """Run a command and return its output"""
@@ -29,6 +32,8 @@ def run_command(command, description):
     except Exception as e:
         print(f"Error running {description}: {e}")
         return False
+
+
 
 def main():
     """Main function to run security checks"""
@@ -78,7 +83,7 @@ def main():
             "grep -r -E '(password|secret|key|token).*=.*[\"\\']' "
             "--include='*.py' . || echo 'No potential secrets found'"
         ),
-        "Checking for Hardcoded Secrets (Basic Scan)"
+        "Checking for Hardcoded Secrets (Basic Scan)",
     )
     
     # Summary
@@ -90,6 +95,8 @@ def main():
     
     print(f"\nDetailed reports saved in the '{reports_dir}' directory.")
     return 0 if all_passed else 1
+
+
 
 if __name__ == "__main__":
     sys.exit(main())
