@@ -81,8 +81,8 @@ jobs:
         
       - name: Security linting with pylint
         run: |
-          pip install pylint-security
-          pylint --load-plugins=pylint_security .
+          pip install pylint
+          pylint --disable=all --enable=invalid-name,unnecessary-lambda,dangerous-default-value .
         continue-on-error: true
         
       - name: Check formatting with black

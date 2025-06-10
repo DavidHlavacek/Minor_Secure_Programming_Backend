@@ -79,7 +79,10 @@ def main():
     
     # 3. Check for hardcoded secrets (basic check)
     results["secrets"] = run_command(
-        "grep -r -E '(password|secret|key|token).*=.*[\"\\']' --include='*.py' . || echo 'No potential secrets found'",
+        (
+            "grep -r -E '(password|secret|key|token).*=.*[\"\\']' "
+            "--include='*.py' . || echo 'No potential secrets found'"
+        ),
         "Checking for Hardcoded Secrets (Basic Scan)"
     )
     
