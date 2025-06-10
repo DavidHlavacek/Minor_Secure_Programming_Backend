@@ -85,7 +85,7 @@ jobs:
           pylint --disable=all --enable=invalid-name,unnecessary-lambda,dangerous-default-value .
         continue-on-error: true
         
-      - name: Check formatting with black
+      - name: Run black format check
         run: black --check --diff .
         continue-on-error: true
 
