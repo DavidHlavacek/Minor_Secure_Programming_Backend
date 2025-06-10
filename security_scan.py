@@ -20,11 +20,7 @@ def run_command(command, description):
     banner(description)
     try:
         result = subprocess.run(
-            command, 
-            shell=True, 
-            check=False, 
-            capture_output=True, 
-            text=True
+            command, shell=True, check=False, capture_output=True, text=True
         )
         print(result.stdout)
         if result.stderr:
@@ -65,16 +61,15 @@ def main():
     
     # 1. Dependencies vulnerability scan
     results["dependencies"] = run_command(
-        "safety check -r requirements.txt --json > " + 
-        os.path.join(reports_dir, "dependencies.json"),
-        "Checking Dependencies for Known Vulnerabilities"
+        "safety check -r requirements.txt --json > "
+        + os.path.join(reports_dir, "dependencies.json"),
+        "Checking Dependencies for Known Vulnerabilities",
     )
     
     # 2. Code security analysis
     results["code_security"] = run_command(
-        "bandit -r . -x tests/ -f json -o " + 
-        os.path.join(reports_dir, "bandit.json"),
-        "Running Static Security Analysis"
+        "bandit -r . -x tests/ -f json -o " + os.path.join(reports_dir, "bandit.json"),
+        "Running Static Security Analysis",
     )
     
     # 3. Check for hardcoded secrets (basic check)
