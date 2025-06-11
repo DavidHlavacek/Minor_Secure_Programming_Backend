@@ -6,30 +6,41 @@ class Settings(BaseSettings):
     """
     Application settings loaded from environment variables.
     """
-    # TODO: Add application configuration
+    # Application configuration
     app_name: str = "Minor Secure Programming API"
     debug: bool = False
+    version: str = "0.1.0"
     
-    # TODO: Add Supabase configuration
-    # supabase_url: str
-    # supabase_key: str
+    # Server configuration
+    host: str = "0.0.0.0"
+    port: int = 8000
     
-    # TODO: Add database configuration
-    # database_url: str
+    # Supabase configuration
+    supabase_url: str
+    supabase_key: str
+    supabase_service_role_key: str | None = None
     
-    # TODO: Add security configuration
-    # secret_key: str
-    # algorithm: str = "HS256"
-    # access_token_expire_minutes: int = 30
+    # Security configuration
+    secret_key: str
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    
+    # CORS configuration
+    allowed_origins: str = "http://localhost:3000,http://localhost:8000"
+    
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        """Convert comma-separated origins to list."""
+        return [origin.strip() for origin in self.allowed_origins.split(",")]
     
     class Config:
         env_file = ".env"
+        extra = "ignore"  # Ignore extra fields in .env file
 
 
 @lru_cache()
 def get_settings():
     """
-    Get cached settings instance.
-    TODO: Implement proper settings caching and validation
+    Get cached settings instance with proper validation.
     """
     return Settings() 
