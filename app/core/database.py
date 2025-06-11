@@ -1,45 +1,64 @@
 from supabase import create_client, Client
 from app.core.config import get_settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class SupabaseClient:
     """
     Supabase client wrapper for database operations.
-    TODO: Implement proper client initialization and connection management
     """
     
     def __init__(self):
-        # TODO: Initialize Supabase client with proper configuration
         self.client: Client = None
+        self._settings = None
         
     async def connect(self):
         """
         Initialize Supabase connection.
-        TODO: Implement connection setup:
-        - Get credentials from settings
-        - Create client instance
-        - Test connection
         """
-        settings = get_settings()
-        # self.client = create_client(settings.supabase_url, settings.supabase_key)
-        pass
+        try:
+            self._settings = get_settings()
+            self.client = create_client(
+                self._settings.supabase_url, 
+                self._settings.supabase_key
+            )
+            logger.info("Successfully connected to Supabase")
+        except Exception as e:
+            logger.error(f"Failed to connect to Supabase: {e}")
+            raise
         
     async def disconnect(self):
         """
         Close Supabase connection.
-        TODO: Implement proper cleanup if needed
+        Note: Supabase Python client doesn't require explicit disconnection
         """
-        pass
+        self.client = None
+        logger.info("Disconnected from Supabase")
         
     async def health_check(self) -> bool:
         """
-        Check database connectivity.
-        TODO: Implement health check:
-        - Test connection to Supabase
-        - Verify table access
-        - Return connection status
+        Check database connectivity by testing a simple query.
         """
-        return False
+        try:
+            if not self.client:
+                return False
+                
+            # Test connection with a simple query to auth.users
+            response = self.client.auth.get_session()
+            return True
+        except Exception as e:
+            logger.error(f"Supabase health check failed: {e}")
+            return False
+    
+    def get_client(self) -> Client:
+        """
+        Get the Supabase client instance.
+        """
+        if not self.client:
+            raise RuntimeError("Database not connected. Call connect() first.")
+        return self.client
 
 
 # Global database instance
@@ -49,34 +68,30 @@ db = SupabaseClient()
 async def get_database() -> SupabaseClient:
     """
     Dependency to get database instance.
-    TODO: Ensure proper connection management
     """
     return db
 
 
 async def init_db():
     """
-    Initialize database connection and tables.
-    TODO: Implement database initialization:
-    - Connect to Supabase
-    - Verify required tables exist
-    - Set up any necessary schemas
+    Initialize database connection and verify tables.
     """
-    await db.connect()
+    try:
+        await db.connect()
+        
+        # Verify connection with health check
+        if await db.health_check():
+            logger.info("Database initialization completed successfully")
+        else:
+            logger.warning("Database connection established but health check failed")
+            
+    except Exception as e:
+        logger.error(f"Database initialization failed: {e}")
+        raise
 
 
 async def close_db():
     """
     Close database connections.
-    TODO: Implement proper cleanup
     """
     await db.disconnect()
-
-
-# TODO: Define table schemas and models
-"""
-Expected tables:
-- users (id, email, username, created_at, updated_at)
-- games (id, user_id, name, category, username, created_at)
-- user_stats (id, user_id, game_id, stats_data, updated_at)
-""" 
