@@ -17,7 +17,7 @@ app = FastAPI(
     description="A secure backend API for aggregating and managing gaming statistics",
     version="0.1.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
 )
 
 # Configure CORS
@@ -31,14 +31,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def root():
     """Root endpoint - API health check"""
     return {
         "message": "Gamer CV API is running!",
         "version": "0.1.0",
-        "status": "healthy"
+        "status": "healthy",
     }
+
 
 @app.get("/health")
 async def health_check():
@@ -46,20 +48,21 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "gamer-cv-api",
-        "version": "0.1.0"
+        "version": "0.1.0",
     }
+
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", 8000))
     debug = os.getenv("DEBUG", "False").lower() == "true"
-    
+
     uvicorn.run(
         "main:app",
         host=host,
         port=port,
         reload=debug,
-        log_level="info"
-    ) 
+        log_level="info",
+    )
