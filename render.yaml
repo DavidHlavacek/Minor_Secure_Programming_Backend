@@ -1,0 +1,15 @@
+services:
+  # A web service
+  - type: web
+    name: gamer-cv-api
+    runtime: python
+    plan: free # Use the free plan
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_ORIGINS
+        sync: false  # This will be manually set in the Render dashboard for security
