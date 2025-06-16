@@ -8,6 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 
+# Import routers
+from app.routers import stats, users, auth
+from app.api.v1.api import api_router as api_v1_router
+
 # Load environment variables
 load_dotenv()
 
@@ -21,7 +25,7 @@ app = FastAPI(
 )
 
 # Configure CORS
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+allowed_origins = ["*"]  # Allow all origins for development
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,6 +34,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(users.router, prefix="/users", tags=["Users"])
+app.include_router(stats.router, prefix="/stats", tags=["Game Statistics"])
+
+# Include v1 API router with all endpoints
+app.include_router(api_v1_router, prefix="/api/v1")
 
 
 @app.get("/")
