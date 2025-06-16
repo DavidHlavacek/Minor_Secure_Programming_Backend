@@ -20,31 +20,83 @@ class StatsTransformer:
         """
         Transform Riot API League of Legends response to MOBAStats schema.
         
-        Example Riot API response structure:
-        {
-            "summonerLevel": 145,
-            "queueType": "RANKED_SOLO_5x5",
-            "tier": "GOLD",
-            "rank": "II", 
-            "wins": 67,
-            "losses": 53,
-            "leaguePoints": 1420
-        }
+        Args:
+            riot_data: Combined data from multiple Riot API endpoints including:
+                - Summoner data (from get_summoner_by_name)
+                - Ranked stats (from get_ranked_stats)
+                - Champion mastery (from get_champion_mastery)
+                - Match history summary (from processing match details)
+                
+        Returns:
+            Standardized MOBAStats object
         """
-        # TODO: Implement actual transformation logic
+        # Extract base summoner data
+        summoner_data = riot_data.get("summoner", {})
+        ranked_data = riot_data.get("ranked", {})
+        mastery_data = riot_data.get("mastery", [])
+        match_data = riot_data.get("matches", [])
+        
+        # Process champion mastery to get favorite champions
+        favorite_champions = []
+        for champ in mastery_data[:3]:  # Take top 3 champions
+            # In a real app, we'd convert champion IDs to names using static data
+            champ_id = champ.get("championId", 0)
+            champion_name = f"Champion {champ_id}"  # Placeholder, would use actual names
+            favorite_champions.append(champion_name)
+        
+        # Calculate win rate
+        wins = ranked_data.get("wins", 0)
+        losses = ranked_data.get("losses", 0)
+        total_games = wins + losses
+        win_rate = (wins / total_games * 100) if total_games > 0 else 0
+        
+        # Calculate average KDA from match history
+        total_kills = 0
+        total_deaths = 0
+        total_assists = 0
+        main_roles_count = {}
+        
+        for match in match_data:
+            # In a real implementation, find the participant that matches our summoner
+            # Here we'll just assume we have participant data directly
+            participant = match.get("participant", {})
+            
+            # Add KDA stats
+            total_kills += participant.get("kills", 0)
+            total_deaths += participant.get("deaths", 0)
+            total_assists += participant.get("assists", 0)
+            
+            # Track role frequencies
+            role = participant.get("role", "UNKNOWN")
+            main_roles_count[role] = main_roles_count.get(role, 0) + 1
+        
+        # Calculate average KDA
+        match_count = len(match_data)
+        average_kda = None
+        if match_count > 0:
+            avg_kills = total_kills / match_count
+            avg_deaths = max(1, total_deaths / match_count)  # Avoid division by zero
+            avg_assists = total_assists / match_count
+            average_kda = (avg_kills + avg_assists) / avg_deaths
+        
+        # Determine main role
+        main_role = None
+        if main_roles_count:
+            main_role = max(main_roles_count, key=main_roles_count.get)
+        
+        # Combine into MOBAStats
         return MOBAStats(
-            player_level=riot_data.get("summonerLevel"),
-            current_rank=f"{riot_data.get('tier', '')} {riot_data.get('rank', '')}".strip(),
-            rank_tier=riot_data.get("tier"),
-            rank_division=riot_data.get("rank"),
-            wins=riot_data.get("wins"),
-            losses=riot_data.get("losses"),
-            win_rate=riot_data.get("wins") / (riot_data.get("wins", 0) + riot_data.get("losses", 1)) * 100 if riot_data.get("wins") else None,
-            total_games=riot_data.get("wins", 0) + riot_data.get("losses", 0),
-            # TODO: Add more fields from additional Riot API calls
-            main_role=None,  # Requires match history API
-            favorite_champions=None,  # Requires champion mastery API
-            average_kda=None  # Requires match history API
+            player_level=summoner_data.get("summonerLevel"),
+            current_rank=f"{ranked_data.get('tier', '')} {ranked_data.get('rank', '')}".strip(),
+            rank_tier=ranked_data.get("tier"),
+            rank_division=ranked_data.get("rank"),
+            wins=wins,
+            losses=losses,
+            win_rate=win_rate,
+            total_games=total_games,
+            main_role=main_role,
+            favorite_champions=favorite_champions if favorite_champions else None,
+            average_kda=round(average_kda, 2) if average_kda is not None else None
         )
     
     @staticmethod 

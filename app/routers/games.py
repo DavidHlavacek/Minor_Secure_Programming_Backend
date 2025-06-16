@@ -4,7 +4,7 @@ from app.models.games import (
     GameCreate, GameUpdate, GameResponse, GamesListResponse, GameFilter
 )
 from app.core.security import get_current_active_user
-from app.core.database import get_database
+from app.core.database import get_db
 from app.services.games_service import GamesService
 
 
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/games", tags=["games"])
 async def create_game(
     game_data: GameCreate,
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Add a new game to user's library.
@@ -40,7 +40,7 @@ async def get_user_games(
     limit: int = Query(20, ge=1, le=100, description="Number of games to return"),
     offset: int = Query(0, ge=0, description="Number of games to skip"),
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Get user's games with optional filtering and pagination.
@@ -62,7 +62,7 @@ async def get_user_games(
 async def get_game(
     game_id: str,
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Get specific game by ID.
@@ -83,7 +83,7 @@ async def update_game(
     game_id: str,
     game_data: GameUpdate,
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Update game information.
@@ -104,7 +104,7 @@ async def update_game(
 async def delete_game(
     game_id: str,
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Remove game from user's library.
