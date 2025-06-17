@@ -8,7 +8,7 @@ from app.services.external_apis.valorant_service import ValorantService
 # ──────────────────────────────
 # Router – *no* prefix here; we add it when including the router
 # ──────────────────────────────
-router = APIRouter(tags=["valorant"])
+router = APIRouter(prefix="/valorant", tags=["valorant"])
 
 
 # ──────────────────────────────
