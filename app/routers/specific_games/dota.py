@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Any, Union
 
 from app.services.external_apis.open_dota import OpenDotaService
 
-router = APIRouter(tags=["dota"])
+router = APIRouter(prefix="/dota", tags=["dota"])
 
 # Example pro player IDs for testing
 PRO_PLAYERS = {

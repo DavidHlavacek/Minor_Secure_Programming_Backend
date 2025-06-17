@@ -8,7 +8,7 @@ from app.core.database import get_db
 # Load environment variables
 load_dotenv()
 
-router = APIRouter()
+router = APIRouter(prefix="/lol", tags=["lol"])
 
 @router.get("/summoner/{region}/{summoner_name}")
 async def get_summoner_by_name(region: str, summoner_name: str):
