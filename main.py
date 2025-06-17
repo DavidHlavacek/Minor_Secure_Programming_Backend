@@ -8,8 +8,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 
-# Import routers
-from app.routers import stats, users, auth
 from app.api.v1.api import api_router as api_v1_router
 
 # Load environment variables
@@ -35,11 +33,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(users.router, prefix="/users", tags=["Users"])
-app.include_router(stats.router, prefix="/stats", tags=["Game Statistics"])
-
 # Include v1 API router with all endpoints
 app.include_router(api_v1_router, prefix="/api/v1")
 
@@ -51,16 +44,6 @@ async def root():
         "message": "Gamer CV API is running!",
         "version": "0.1.0",
         "status": "healthy",
-    }
-
-
-@app.get("/health")
-async def health_check():
-    """Health check endpoint for monitoring"""
-    return {
-        "status": "healthy",
-        "service": "gamer-cv-api",
-        "version": "0.1.0",
     }
 
 

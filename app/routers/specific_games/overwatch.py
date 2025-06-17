@@ -4,7 +4,7 @@ from app.services.external_apis.overwatch_api import OverFastAPIService
 import logging
 
 logger = logging.getLogger(__name__)
-router = APIRouter()
+router = APIRouter(prefix="/overwatch", tags=["overwatch"])
 
 async def get_overwatch_service() -> OverFastAPIService:
     """Dependency to get the OverFastAPIService instance."""
