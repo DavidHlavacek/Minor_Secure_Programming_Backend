@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     
     # CORS configuration
     allowed_origins: str = "http://localhost:3000,http://localhost:8000"
+
+    #  Riot / Valorant
+    riot_api_key: str
+    riot_region: str = "europe"
+
     
     @property
     def allowed_origins_list(self) -> list[str]:
