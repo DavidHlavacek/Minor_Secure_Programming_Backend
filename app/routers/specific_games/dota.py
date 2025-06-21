@@ -5,12 +5,13 @@ Endpoints for accessing Dota 2 statistics via OpenDota API
 No API key required for most endpoints!
 """
 import os
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Security
 from typing import Dict, List, Optional, Any, Union
 
 from app.services.external_apis.open_dota import OpenDotaService
+from app.middleware.auth_middleware import get_current_user, get_optional_user
 
-router = APIRouter(prefix="/dota", tags=["dota"])
+router = APIRouter(tags=["dota"])
 
 # Example pro player IDs for testing
 PRO_PLAYERS = {
@@ -22,7 +23,7 @@ PRO_PLAYERS = {
 }
 
 @router.get("/players/{account_id}")
-async def get_player_info(account_id: str):
+async def get_player_info(account_id: str, current_user: Dict = Security(get_current_user)):
     """Get player information by Steam ID"""
     open_dota = OpenDotaService()
     try:
@@ -43,7 +44,7 @@ async def get_player_info(account_id: str):
         )
 
 @router.get("/players/{account_id}/recent-matches")
-async def get_recent_matches(account_id: str, limit: int = 10):
+async def get_recent_matches(account_id: str, limit: int = 10, current_user: Dict = Security(get_current_user)):
     """Get recent matches for a player"""
     open_dota = OpenDotaService()
     try:
@@ -64,7 +65,7 @@ async def get_recent_matches(account_id: str, limit: int = 10):
         )
 
 @router.get("/players/{account_id}/win-loss")
-async def get_win_loss(account_id: str):
+async def get_win_loss(account_id: str, current_user: Dict = Security(get_current_user)):
     """Get player win/loss record"""
     open_dota = OpenDotaService()
     try:
@@ -85,7 +86,7 @@ async def get_win_loss(account_id: str):
         )
 
 @router.get("/players/{account_id}/heroes")
-async def get_player_heroes(account_id: str):
+async def get_player_heroes(account_id: str, current_user: Dict = Security(get_current_user)):
     """Get player hero statistics"""
     open_dota = OpenDotaService()
     try:
@@ -106,7 +107,7 @@ async def get_player_heroes(account_id: str):
         )
 
 @router.get("/heroes")
-async def get_heroes():
+async def get_heroes(current_user: Dict = Depends(get_optional_user)):
     """Get list of all heroes"""
     open_dota = OpenDotaService()
     try:
@@ -123,7 +124,7 @@ async def get_heroes():
         )
 
 @router.get("/hero-stats")
-async def get_hero_stats():
+async def get_hero_stats(current_user: Dict = Depends(get_optional_user)):
     """Get stats for all heroes"""
     open_dota = OpenDotaService()
     try:
@@ -140,7 +141,7 @@ async def get_hero_stats():
         )
 
 @router.get("/matches/{match_id}")
-async def get_match_details(match_id: str):
+async def get_match_details(match_id: str, current_user: Dict = Security(get_current_user)):
     """Get detailed information about a match"""
     open_dota = OpenDotaService()
     try:
@@ -157,7 +158,7 @@ async def get_match_details(match_id: str):
         )
 
 @router.get("/public-matches")
-async def get_public_matches(limit: int = 10):
+async def get_public_matches(limit: int = 10, current_user: Dict = Depends(get_optional_user)):
     """Get list of recent public matches"""
     open_dota = OpenDotaService()
     try:
@@ -174,7 +175,7 @@ async def get_public_matches(limit: int = 10):
         )
 
 @router.get("/pro-players")
-async def get_pro_players():
+async def get_pro_players(current_user: Dict = Depends(get_optional_user)):
     """Get list of professional players"""
     open_dota = OpenDotaService()
     try:
@@ -191,7 +192,7 @@ async def get_pro_players():
         )
 
 @router.get("/pro-matches")
-async def get_pro_matches(limit: int = 10):
+async def get_pro_matches(limit: int = 10, current_user: Dict = Depends(get_optional_user)):
     """Get list of professional matches"""
     open_dota = OpenDotaService()
     try:
@@ -208,7 +209,7 @@ async def get_pro_matches(limit: int = 10):
         )
 
 @router.get("/profile/{account_id}")
-async def get_player_profile(account_id: str):
+async def get_player_profile(account_id: str, current_user: Dict = Security(get_current_user)):
     """Get complete player profile with important stats (combined endpoint)"""
     open_dota = OpenDotaService()
     try:

@@ -9,7 +9,7 @@ Middleware for security protections:
 """
 
 from fastapi import Request, Response
-from fastapi.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 from app.core.security import SecurityValidator, RateLimiter, get_security_headers, SecurityAuditLogger
 
