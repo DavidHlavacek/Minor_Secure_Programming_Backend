@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Security, status
 from typing import Dict, Any
 from app.services.external_apis.overwatch_api import OverFastAPIService
+from app.middleware.auth_middleware import get_current_user, get_optional_user
 import logging
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/overwatch", tags=["overwatch"])
+router = APIRouter(tags=["overwatch"])
 
 async def get_overwatch_service() -> OverFastAPIService:
     """Dependency to get the OverFastAPIService instance."""
@@ -13,6 +14,7 @@ async def get_overwatch_service() -> OverFastAPIService:
 @router.get("/players/{battletag}", response_model=Dict[str, Any])
 async def get_player_profile(
     battletag: str,
+    current_user: Dict = Security(get_current_user),
     overwatch_service: OverFastAPIService = Depends(get_overwatch_service)
 ):
     """
@@ -38,6 +40,7 @@ async def get_player_profile(
 @router.get("/players/{battletag}/summary", response_model=Dict[str, Any])
 async def get_player_summary(
     battletag: str,
+    current_user: Dict = Security(get_current_user),
     overwatch_service: OverFastAPIService = Depends(get_overwatch_service)
 ):
     """
@@ -58,6 +61,7 @@ async def get_player_summary(
 @router.get("/players/{battletag}/competitive", response_model=Dict[str, Any])
 async def get_player_competitive(
     battletag: str,
+    current_user: Dict = Security(get_current_user),
     overwatch_service: OverFastAPIService = Depends(get_overwatch_service)
 ):
     """
@@ -79,6 +83,7 @@ async def get_player_competitive(
 async def get_player_heroes(
     battletag: str,
     mode: str,
+    current_user: Dict = Security(get_current_user),
     overwatch_service: OverFastAPIService = Depends(get_overwatch_service)
 ):
     """
@@ -102,6 +107,7 @@ async def get_player_heroes(
 
 @router.get("/heroes", response_model=Dict[str, Any])
 async def get_heroes(
+    current_user: Dict = Security(get_current_user),
     overwatch_service: OverFastAPIService = Depends(get_overwatch_service)
 ):
     """Get information about all Overwatch 2 heroes."""
@@ -115,6 +121,7 @@ async def get_heroes(
 @router.get("/heroes/{hero_key}", response_model=Dict[str, Any])
 async def get_hero_details(
     hero_key: str,
+    current_user: Dict = Security(get_current_user),
     overwatch_service: OverFastAPIService = Depends(get_overwatch_service)
 ):
     """
@@ -134,6 +141,7 @@ async def get_hero_details(
 
 @router.get("/maps", response_model=Dict[str, Any])
 async def get_maps(
+    current_user: Dict = Security(get_current_user),
     overwatch_service: OverFastAPIService = Depends(get_overwatch_service)
 ):
     """Get information about all Overwatch 2 maps."""
@@ -147,6 +155,7 @@ async def get_maps(
 @router.get("/profile/{battletag}", response_model=Dict[str, Any])
 async def get_combined_player_profile(
     battletag: str,
+    current_user: Dict = Security(get_current_user),
     overwatch_service: OverFastAPIService = Depends(get_overwatch_service)
 ):
     """
