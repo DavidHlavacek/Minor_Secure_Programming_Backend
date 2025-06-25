@@ -3,7 +3,7 @@ from typing import Optional, List
 from app.models.auth import UserProfile
 from app.models.users import UserUpdate, UserSettings, UserStatsOverview
 from app.core.security import get_current_active_user
-from app.core.database import get_database
+from app.core.database import get_db
 from app.services.users_service import UsersService
 
 
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get("/me", response_model=UserProfile)
 async def get_current_user_profile(
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Get current user's profile information.
@@ -29,7 +29,7 @@ async def get_current_user_profile(
 async def update_user_profile(
     profile_data: UserUpdate,
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Update current user's profile information.
@@ -49,7 +49,7 @@ async def update_user_profile(
 @router.get("/me/settings", response_model=UserSettings)
 async def get_user_settings(
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Get user's application settings and preferences.
@@ -65,7 +65,7 @@ async def get_user_settings(
 async def update_user_settings(
     settings_data: UserSettings,
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Update user's application settings and preferences.
@@ -80,7 +80,7 @@ async def update_user_settings(
 @router.get("/me/overview", response_model=UserStatsOverview)
 async def get_user_overview(
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Get user's gaming overview and aggregated statistics.
@@ -101,7 +101,7 @@ async def get_user_overview(
 @router.delete("/me")
 async def delete_user_account(
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Delete current user's account and all associated data.
@@ -125,7 +125,7 @@ async def delete_user_account(
 async def get_user_activity(
     limit: int = 10,
     current_user = Depends(get_current_active_user),
-    db = Depends(get_database)
+    db = Depends(get_db)
 ):
     """
     Get user's recent activity log.
